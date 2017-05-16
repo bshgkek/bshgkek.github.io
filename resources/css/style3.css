@@ -6,7 +6,7 @@ body, input, button {
 }
 
 body {
-	background: #555555;
+	background: #edf0f1;
 	padding: 80px 0 0 0;
 }
 
@@ -18,7 +18,7 @@ header {
 	left: 0;
 	padding: 15px;
 	z-index: 5;
-	background: #2B2B2B;
+	background: #25b99a;
 	box-shadow: 0px 2px 4px rgba(44,62,80,0.15);
 	border-bottom-right-radius: 10px;
 	border-bottom-left-radius: 10px;
@@ -30,13 +30,11 @@ header input {
 	float: left;
 	color: #fff;
 	text-indent: 15px;
-	background: #555555;
+	background: rgba(255,255,255,0.2);
 	border-radius: 5px;
 	padding: 0 60px 0 0;
 	font-weight: 400;
 	font-size: 15px;
-	border: 1;
-	border-color: #AAAAAA;
 	border-top-right-radius: 25px;
 	border-top-left-radius: 5px;
 	border-bottom-right-radius: 25px;
@@ -77,13 +75,12 @@ header button#add {
 	cursor: pointer;
 
 	-webkit-appearance: none;
-	-moz-appearance: none;
 	-ms-appearance: none;
 	-o-appearance: none;
 }
 
 header button i {
-	color: #4C4C4C;
+	color: #25b99a;
 }
 
 header button#settings {
@@ -110,6 +107,7 @@ header button#settings {
 ul.todo {
 	width: 49%;
 	float: left;
+
 }
 
 ul.todo li {
@@ -119,9 +117,9 @@ ul.todo li {
 	font-size: 14px;
 	float: left;
 	font-weight: 500;
-	color: #eee;
+	color: #444;
 	line-height: 22px;
-	background: #2b2b2b;
+	background: #fff;
 	position: relative;
 	border-radius: 5px;
 	box-shadow: 0px 2px 4px rgba(44,62,80,0.10);
@@ -188,6 +186,7 @@ ul.todo#completed li .buttons button.complete:hover i.fa-check {
 	border: 2px solid;
 	padding: 7px;
 	border-color: #eee;
+	color: #edf0f1;
 }
 
 ul.todo li .buttons button.remove i.fa-trash-o {
@@ -240,7 +239,7 @@ ul.todo#completed:empty:before {
 	content: '';
 	width: 150px;
 	height: 1px;
-	background: #BFBFBF;
+	background: #D3D3D3;
 	position: absolute;
 	top: 15px;
 	left: 50%;
@@ -254,7 +253,7 @@ ul.todo#completed:empty:after {
 	display: block;
 	text-align: center;
 	font-size: 12px;
-	color: #BFBFBF;
+	color: #aaa;
 	margin: 20px 0 0 0;
 }
 
@@ -264,7 +263,7 @@ ul.todo#todo:empty:after {
 	display: block;
 	text-align: center;
 	font-size: 12px;
-	color: #BFBFBF;
+	color: #aaa;
 	margin: 20px 0 0 0;
 }
 
@@ -277,11 +276,9 @@ ul.todo#todo:empty:after {
 	display: block;
 	text-align: center;
 	font-size: 16px;
-	color: #BFBFBF;
+	color: #aaa;
 	padding: 10px 0 10px 0;
 }
-
-
 
 #todoList {
 	float: left;

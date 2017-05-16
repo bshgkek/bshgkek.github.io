@@ -4,13 +4,11 @@ var completeIcon = '<i class="fa fa-check fa-lg" aria-hidden="true">';
 
 var data = (localStorage.getItem('todoList')) ? JSON.parse(localStorage.getItem('todoList')) : {
 	todo: [],
-	completed: []
+	completed: [],
+	style: 'light'
 };
 
-
-
-/////////////////////
-// Event Listeners //
+/////////////////////// Event Listeners //
 /////////////////////
 
 // add item button clicked
@@ -33,9 +31,35 @@ document.getElementById('item').addEventListener('keydown', function(e) {
 	}
 });
 
+document.getElementById('settings').addEventListener('click', function(e) {
+	let x = document.getElementById('mystyle');
+	if(x.href.endsWith('2.css')){
+		swapStyleSheet(x, 'resources/css/style3.css');
+		data.style = 'light';
+		updateDataStorage();	
+	} else {
+		swapStyleSheet(x, 'resources/css/style2.css');
+		data.style = 'dark';
+		updateDataStorage();	
+	}
+});
 
-renderToDoList();
-function renderToDoList() {
+
+/////////////////////////
+// Render from storage //
+/////////////////////////
+
+/**
+ * fills todo/completed lists based on localStorage
+ * @method renderTodoList
+ */
+function renderTodoList() {
+	if(data.style === 'dark'){
+		document.getElementById('mystyle').setAttribute('href','resources/css/style2.css');
+	} else {
+		document.getElementById('mystyle').setAttribute('href','resources/css/style3.css');
+	}
+
 	if(!data.completed.length && !data.todo.length) return;
 	for (var i = 0; i < data.todo.length; i++) {
 		var val = data.todo[i];
@@ -45,18 +69,31 @@ function renderToDoList() {
 		var val = data.completed[i];
 		addItemTodo(val, true)
 	}
+
+
+
 }
 
+renderTodoList();
 
 
+/////////////////////
+// Other Functions //
+/////////////////////
 
-
-
+/**
+ * updates localStorage with the todolist
+ * @method updateDataStorage
+ */
 function updateDataStorage() {
 	localStorage.setItem('todoList', JSON.stringify(data))
 }
 
-
+/**
+ * removes an item from the todo list - called when delete button clicked
+ * @method removeItem
+ * @param {clickEvent} event - click event of the delete button
+ */
 function removeItem(event) {
 	var li = this.parentNode.parentNode;
 	var val = li.innerText;
@@ -71,8 +108,13 @@ function removeItem(event) {
 
 	list.removeChild(li);
 	updateDataStorage();
-	
 }
+
+/**
+ * completes or uncompletes an item depending on original list - called on complete button clicked
+ * @method completeItem
+ * @param {clickEvent} event - click event of the complete button
+ */
 function completeItem(event) {
 	var li = this.parentNode.parentNode;
 	var val = li.innerText;
@@ -93,7 +135,12 @@ function completeItem(event) {
 	updateDataStorage();
 }
 
-// Adds new item to todo list
+/**
+ * adds an item to the todo list from the top input bar or completed list
+ * @method addItemTodo
+ * @param {string} text - string of todo
+ * @param {boolean} completed - check whether item moving from completed > non completed
+ */
 function addItemTodo(text, completed) {
 	var list = (completed) ? document.getElementById('completed') : document.getElementById('todo');
 
@@ -121,3 +168,7 @@ function addItemTodo(text, completed) {
 	updateDataStorage();
 }
 
+
+function swapStyleSheet(ele, sheet) {
+   	ele.setAttribute("href", sheet);
+}
