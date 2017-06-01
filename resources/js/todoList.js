@@ -55,9 +55,9 @@ document.getElementById('settings').addEventListener('click', function(e) {
  */
 function renderTodoList() {
 	if(data.style === 'dark'){
-		document.getElementById('mystyle').setAttribute('href','resources/css/style2.css');
+		document.getElementById('mystyle').setAttribute('href','resources/css/todoList.css');
 	} else {
-		document.getElementById('mystyle').setAttribute('href','resources/css/style3.css');
+		document.getElementById('mystyle').setAttribute('href','resources/css/todoList2.css');
 	}
 
 	if(!data.completed.length && !data.todo.length) return;
