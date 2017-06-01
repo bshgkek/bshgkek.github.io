@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>A*</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+    	
+    	body {
+    		padding: 15px;
+    	}
+
+    	h1 {
+    		padding-bottom: 20px;
+    	}
+
+		#sketch {
+			float: left;
+		}
+		#buttons {
+			float: left;
+			padding-right: 15px;
+			margin: 15px;
+		}
+		
+		#start {
+			width: 100%;
+		}
+
+    </style>
+</head>
+<body>
+
+	<h1>A* Path Finding Algorithm</h1>
+	<div id="buttons">
+		<div class="form-group">
+  			<label for="cellSize">Cells Per Row</label>
+  			<select class="form-control" id="cellSize">
+    			<option>10</option>
+    			<option>20</option>
+    			<option selected="selected">40</option>
+    			<option>60</option>
+    			<option>100</option>
+			  </select>
+		</div>
+		<div class="form-group">
+  			<label for="wallPct">Wall Percent</label>
+  			<select class="form-control" id="wallPct">
+    			<option>10%</option>
+    			<option>15%</option>
+    			<option>20%</option>
+    			<option>25%</option>
+    			<option selected="selected">30%</option>
+    			<option>35%</option>
+    			<option>40%</option>
+    			<option>45%</option>
+			  </select>
+		</div>
+	    <label><input type="checkbox" id="diagonals"> Diagonals?</label><br><br>
+		<button type="button" class="btn btn-primary" id="newMap">Generate Map</button><br><br><br>
+		<button type="button" class="btn btn-success" id="start">Start</button>
+	</div>
+	<div id="sketch"></div>
+	<!-- <div class="checkbox"> -->
+	<!-- </div> -->
+
+	<script src="resources/js/aStarSketch.js"></script>
+	<script src="resources/js/aStarCell.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.10/p5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.10/addons/p5.dom.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.10/addons/p5.sound.js"></script>
+	
+</body>
+</html>
