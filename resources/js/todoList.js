@@ -33,12 +33,12 @@ document.getElementById('item').addEventListener('keydown', function(e) {
 
 document.getElementById('settings').addEventListener('click', function(e) {
 	let x = document.getElementById('mystyle');
-	if(x.href.endsWith('2.css')){
-		swapStyleSheet(x, 'resources/css/style3.css');
+	if(!x.href.endsWith('2.css')){
+		swapStyleSheet(x, 'resources/css/todoList2.css');
 		data.style = 'light';
 		updateDataStorage();	
 	} else {
-		swapStyleSheet(x, 'resources/css/style2.css');
+		swapStyleSheet(x, 'resources/css/todoList.css');
 		data.style = 'dark';
 		updateDataStorage();	
 	}
