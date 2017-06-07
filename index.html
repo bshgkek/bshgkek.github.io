@@ -3,20 +3,110 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
-    <!-- bootstrap -->
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
-	<link rel="stylesheet" type="text/css" href="resources/css/style.css">
+	<!-- flexbox -->
+   	<link rel="stylesheet" type="text/css" href="flexboxgrid.css">
+
+	<!-- <link rel="stylesheet" type="text/css" href="resources/css/style.css"> -->
+	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 
-<a href="blackjack.html">BlackJack</a><br>
-<a href="smartRockets.html">Smart Rockets</a><br>
-<a href="todoList.html">To Do List App</a><br>
-<a href="MazeGenerator/">Maze Generator</a><br>
-<a href="AStarSearch/">A* Search Algorithm</a><br>
+	<header id="main-header">
+		<div class="container">
+			<div class="row end-sm end-md end-lg center-xs middle-xs middle-sm middle-md middle-lg">
+				<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+					<h1><a href="index.html">bshg<span class="primary-text">kek</span></a></h1>
+				</div>
+				<div class="col-xs-12 col-sm-9 col-md-9 col-lg-9" >
+					<nav id="navbar">
+						<ul>
+							<li class="selected"><a href="index.html">Home</a></li>
+							<li><a href="about.html">About</a></li>
+							<li><a href="services.html">Services</a></li>
+							<li><a href="contact.html">Contact</a></li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</header>
 
+
+	<div id="main-content">
+
+		<section id="subheader">
+			<div class="container">
+				<div class="row center-xs center-sm center-md center-lg">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<h2>Projects</h2>
+					</div>
+				</div>
+			</div>
+		</section>
+
+
+		<section id="projects">
+			<div class="container">
+				<div class="row center-xs center-sm center-md center-lg">
+					<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+						<a href="AStarSearch/">
+							<i class="fa fa-search" aria-hidden="true"></i><br>
+							<h4>A* Search Algorithm</h4>
+							<div class="project-desc">Path finding algorithm to find the shortest path between two points on a grid</div>
+						</a>
+					</div>
+					<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+						<a href="smartRockets.html">
+							<i class="fa fa-rocket" aria-hidden="true"></i><br>
+							<h4>Smart Rockets</h4>
+							<div class="project-desc">'Rockets' use machine learning to reach their goal destination</div>
+						</a>
+					</div>
+					<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+						<a href="MazeGenerator/">
+							<i class="fa fa-arrows" aria-hidden="true"></i><br>
+							<h4>Maze Generator</h4>
+							<div class="project-desc">Agent algorithmically traverses a grid to create a maze</div>
+						</a>
+					</div>
+				</div>
+				<div class="row center-xs center-sm center-md center-lg middle-xs middle-sm middle-md middle-lg">
+					<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+					<a href="todoList.html">
+						<i class="fa fa-list-ul" aria-hidden="true"></i><br>
+						<h4>To Do List App</h4>
+						<div class="project-desc">Minimalistic task tracking, uses browser local storage to save tasks across visits</div>
+					</a>
+					</div>
+					<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+						<a href="blackjack.html">
+							<i class="fa fa-usd" aria-hidden="true"></i><br>
+							<h4>Blackjack</h4>
+							<div class="project-desc">Simple text based blackjack game - WIP</div>
+						</a>
+					</div>
+					<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+						<!-- <a href="AStarSearch/">A* Search Algorithm</a> -->
+					</div>
+				</div>
+			</div>
+		</section>
+
+
+	</div>
+
+	<footer id="main-footer">
+		<div class="container">
+			<div class="row center-xs center-sm center-md center-lg middle-xs middle-sm middle-md middle-lg">
+				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+					&nbsp;
+				</div>
+			</div>
+		</div>
+	</footer>
 <!-- p5 -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.10/p5.js"></script> -->
+	<script src="https://use.fontawesome.com/7dba33233f.js"></script>
 
 </body>
 </html>
