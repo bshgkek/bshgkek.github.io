@@ -164,7 +164,7 @@ function Rocket(dna) {
 
 	this.calcFitness = function() {
 		var d = dist(this.position.x, this.position.y, target.x, target.y);
-		this.fitness = map(d, 0, cW, cW, 0);
+		this.fitness = map(d, 0, cW, cW, 0) * 3;
 		console.log("this.fitness: ", this.fitness);
 		
 		var traveled = this.deathIndex;
@@ -172,7 +172,7 @@ function Rocket(dna) {
 		console.log("traveled: ", traveled);
 		console.log("fromStart: ", fromStart);
 		console.log("cH-this.position.y: ", cH-this.position.y);
-		this.fitness += (fromStart/* * 2*/) + (traveled/* * 2*/) + (cH-this.position.y)/* * 2*/; 
+		this.fitness += (fromStart/* * 2*/) + (traveled/* * 2*/) + (cH-this.position.y) * 2; 
 		// this.fitness += ;
 		console.log("this.fitness: ", this.fitness);
 
@@ -182,13 +182,8 @@ function Rocket(dna) {
 			this.fitness *= lifespan - this.completed;
 		}
 		if(this.crashed) {
-			
-
 			this.fitness /= 25;
 		}
-
-		
-
 		this.fitness *= this.fitness; 
 		return this.fitness;
 	}
