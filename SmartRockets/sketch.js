@@ -5,8 +5,11 @@ var rocketHeight = 35;
 var rocketWidth = 10;
 var maxForce = 0.2;
 
+var rocketStartX = cW/2;
+var rocketStartY = cH;
+
 var population;
-var popsize = 30;
+var popsize = 50;
 var lifespan = 600;
 var dnaIndex = 0;
 var lifeP;
@@ -27,9 +30,11 @@ var obstacleHeight = 10;
 var stopped = 0;
 var generation = 1;
 var bestRocket = null;
+var bestGenRocket = null;
 var topFitness = 0;
 
 function setup() {
+
 	createCanvas(cW, cH);
 	population = new Population();
 	lifeP = createP();
@@ -72,13 +77,14 @@ function draw() {
 }
 
 function Rocket(dna) {
-	this.position = createVector(cW/2,cH);
+	this.position = createVector(rocketStartX,rocketStartY);
 	this.velocity = createVector();
 	this.acceleration = createVector();
 	this.dna = dna || new DNA();
 	this.fitness;
 	this.completed = 0;
 	this.crashed = false;
+	this.deathIndex = 0;
 	this.applyForce = function(force) {
 		this.acceleration.add(force);
 	};
@@ -96,6 +102,7 @@ function Rocket(dna) {
 		if(!this.crashed) {
 			if(this.position.x > obstacle1X && this.position.x < obstacle1X + obstacleWidth && 
 				this.position.y > obstacle1Y && this.position.y < obstacle1Y + obstacleHeight) {
+				this.deathIndex = dnaIndex;
 				this.crashed = true;
 				stopped += 1;
 			}
@@ -103,11 +110,13 @@ function Rocket(dna) {
 			if(this.position.x > obstacle2X && this.position.x < obstacle2X + obstacleWidth && 
 				this.position.y > obstacle2Y && this.position.y < obstacle2Y + obstacleHeight) {
 				this.crashed = true;
+				this.deathIndex = dnaIndex;
 				stopped += 1;
 			}
 	
 			if(this.position.x > cW || this.position.x < 0 || this.position.y > cH 	|| this.position.y < 0) {
 				this.crashed = true;
+				this.deathIndex = dnaIndex;
 				// console.log('3');
 				stopped += 1;
 			}
@@ -122,7 +131,27 @@ function Rocket(dna) {
 		}
 	}
 
-	this.show = function() {
+	this.show = function(x) {
+		if(x === 1) {
+			push();
+			noStroke();
+			fill(0,255,0,150);
+			translate(this.position.x, this.position.y);
+			rotate(this.velocity.heading());
+			rectMode(CENTER);
+			rect(0,0,rocketHeight,rocketWidth);
+			pop();
+		} else if(x === 2) {
+			push();
+			noStroke();
+			fill(0,0,255,150);
+			translate(this.position.x, this.position.y);
+			rotate(this.velocity.heading());
+			rectMode(CENTER);
+			rect(0,0,rocketHeight,rocketWidth);
+			pop();
+		}
+
 		push();
 		noStroke();
 		fill(255,150);
@@ -135,16 +164,30 @@ function Rocket(dna) {
 
 	this.calcFitness = function() {
 		var d = dist(this.position.x, this.position.y, target.x, target.y);
-		d *= 2;
 		this.fitness = map(d, 0, cW, cW, 0);
-		this.fitness += (cH-this.position.y)*2;
+		console.log("this.fitness: ", this.fitness);
+		
+		var traveled = this.deathIndex;
+		var fromStart = dist(this.position.x, this.position.y, rocketStartX, rocketStartY);
+		console.log("traveled: ", traveled);
+		console.log("fromStart: ", fromStart);
+		console.log("cH-this.position.y: ", cH-this.position.y);
+		this.fitness += (fromStart/* * 2*/) + (traveled/* * 2*/) + (cH-this.position.y)/* * 2*/; 
+		// this.fitness += ;
+		console.log("this.fitness: ", this.fitness);
+
+
 		if(this.completed) {
 			this.fitness *= 10;
 			this.fitness *= lifespan - this.completed;
 		}
 		if(this.crashed) {
+			
+
 			this.fitness /= 25;
 		}
+
+		
 
 		this.fitness *= this.fitness; 
 		return this.fitness;
@@ -166,6 +209,14 @@ function Population() {
 			this.rockets[i].update();
 			this.rockets[i].show();
 		}
+		if(bestRocket){
+			bestRocket.update();
+			bestRocket.show(1);
+		}	
+		if(bestGenRocket){
+			bestGenRocket.update();
+			bestGenRocket.show(2);
+		}
 	}
 
 	this.evaulate = function() {
@@ -175,6 +226,7 @@ function Population() {
 			avgFitness += this.rockets[i].calcFitness();
 			if (this.rockets[i].fitness > maxFit){
 				maxFit = this.rockets[i].fitness;
+				bestGenRocket = this.rockets[i];
 				if(maxFit > topFitness) {
 					console.log('setting best rocket with fitness',maxFit);
 					topFitness = maxFit;
@@ -190,7 +242,7 @@ function Population() {
 
 		// normalize fitness values
 		for (var i = 0; i < this.popsize; i++) {
-			console.log("changing fitness: ", this.rockets[i].fitness, "to: ",this.rockets[i].fitness / maxFit);
+			// console.log("changing fitness: ", this.rockets[i].fitness, "to: ",this.rockets[i].fitness / maxFit);
 			this.rockets[i].fitness /= maxFit;
 		}
 
@@ -200,6 +252,12 @@ function Population() {
 			var n = this.rockets[i].fitness * 100;
 			for (var j = 0; j < n; j++) {
 				this.matingPool.push(this.rockets[i]);
+			}
+		}
+		// add overall best rocket to gene pool
+		if(bestRocket){
+			for (var j = 0; j < 100; j++) {
+				this.matingPool.push(bestRocket);
 			}
 		}
 	}
