@@ -9,7 +9,7 @@ function Vehicle(x,y,dna) {
   	this.maxforce = vMaxForce;
   	this.hp = vHpStart;
 
-  	if(dna === undefined) mutate = true;
+  	if(dna !== undefined) mutate = true;
 
 	this.dna = dna || [random(-2, 2), random(-2, 2), random(0, 100), random(0, 100)];
 
