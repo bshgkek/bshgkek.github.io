@@ -1,6 +1,9 @@
 var canvasWidth = 400;
 var canvasHeight = 300;
 
+var level = 1;
+var gameLevel;
+
 var incLearn = true;
 var incLearnRate = 10;
 var incLearnGen = 5;
@@ -13,7 +16,8 @@ var population;
 var popsize = 100;
 var incLearnlifespan = 50;
 var lifespan = incLearn ? incLearnlifespan : maxLifespan;
-var maxLifespan = 400;
+var maxLifespan = level === 1 ? 400 : 600;
+var gameLifeSpan;
 var dnaIndex = 0;
 var lifeP;
 
@@ -25,7 +29,12 @@ var targetWidth = 10;
 
 var obstacleX = 100;
 var obstacleY = 150;
-var obstacleWidth = canvasWidth / 2;
+var obstacle1X = 0;
+var obstacle1Y = canvasHeight - 75;
+var obstacle2X = canvasWidth - canvasWidth * 0.75;
+var obstacle2Y = canvasHeight - 200;
+var obstacle1Width = canvasWidth * 0.5;
+var obstacle2Width = canvasWidth * 0.75;
 var obstacleHeight = 10;
 
 var generation;
@@ -43,6 +52,8 @@ function setup() {
 	generationP = createP();
 	maxFitnessP = createP();
 	avgFitnessP = createP();
+	gameLevel = level;
+	gameLifeSpan = maxLifespan;
 	generationP.html('Generation:' + generation);
 	lifespanP.html('Lifespan: ' + lifespan);
 	maxFitnessP.html('Max Fitness: 0');
@@ -54,26 +65,14 @@ function draw() {
 	background(0);
 	population.run();
 	dnaIndexP.html('DNA Index: ' + dnaIndex);
-	dnaIndex++;
-	if (dnaIndex === population.lifespan) {
-		generation++;
-		generationP.html('Generation: ' + generation);
-		if (generation % population.incLearnGen === 0) {
-			if (population.incLearn) {
-				population.lifespan =
-					population.lifespan < maxLifespan
-						? population.lifespan + population.incLearnRate
-						: maxLifespan;
-				lifespanP.html('Lifespan: ' + population.lifespan);
-			}
-		}
-		population.evaulate();
-		population.selection();
-		dnaIndex = 0;
-	}
 
 	fill(255);
-	rect(obstacleX, obstacleY, obstacleWidth, obstacleHeight);
+	if (gameLevel === 1) {
+		rect(obstacleX, obstacleY, obstacle1Width, obstacleHeight);
+	} else if (gameLevel === 2) {
+		rect(obstacle1X, obstacle1Y, obstacle2Width, obstacleHeight);
+		rect(obstacle2X, obstacle2Y, obstacle2Width, obstacleHeight);
+	}
 	ellipse(target.x, target.y, targetWidth, targetHeight);
 }
 
@@ -96,8 +95,8 @@ function Rocket(dna) {
 	this.acceleration = createVector();
 	this.dna = dna || new DNA();
 	this.fitness;
-	this.completed = false;
-	this.crashed = false;
+	this.completeIndex = 0;
+	this.crashIndex = 0;
 	this.applyForce = function(force) {
 		this.acceleration.add(force);
 	};
@@ -105,37 +104,44 @@ function Rocket(dna) {
 	this.update = function() {
 		var d = dist(this.position.x, this.position.y, target.x, target.y);
 		if (d < 10) {
-			this.completed = true;
+			this.completeIndex = dnaIndex;
 			this.position = target.copy();
 		}
 
 		// rocket hit obstacle
-		if (
-			this.position.x > obstacleX &&
-			this.position.x < obstacleX + obstacleWidth &&
-			this.position.y > obstacleY &&
-			this.position.y < obstacleY + obstacleHeight
-		) {
-			this.crashed = true;
-		}
-
-		// rocket hit outer wall
-		if (
-			this.position.x > canvasWidth ||
-			this.position.x < 0 ||
-			this.position.y > canvasHeight ||
-			this.position.y < 0
-		) {
-			this.crashed = true;
+		if (!this.crashIndex) {
+			if (
+				this.position.x > canvasWidth ||
+				this.position.x < 0 ||
+				this.position.y > canvasHeight ||
+				this.position.y < 0 ||
+				(gameLevel === 1 &&
+					this.position.x > obstacleX &&
+					this.position.x < obstacleX + obstacle1Width &&
+					this.position.y > obstacleY &&
+					this.position.y < obstacleY + obstacleHeight) ||
+				(gameLevel === 2 &&
+					((this.position.x > obstacle1X &&
+						this.position.x < obstacle1X + obstacle2Width &&
+						this.position.y > obstacle1Y &&
+						this.position.y < obstacle1Y + obstacleHeight) ||
+						(this.position.x > obstacle2X &&
+							this.position.x < obstacle2X + obstacle2Width &&
+							this.position.y > obstacle2Y &&
+							this.position.y < obstacle2Y + obstacleHeight)))
+			) {
+				this.crashIndex = dnaIndex;
+			}
 		}
 
 		this.applyForce(this.dna.genes[dnaIndex]);
-		if (!this.completed && !this.crashed) {
+		if (!this.completeIndex && !this.crashIndex) {
 			this.velocity.add(this.acceleration);
 			this.position.add(this.velocity);
 			this.acceleration.mult(0);
 			this.velocity.limit(4);
 		}
+		return this.crashIndex || this.completeIndex;
 	};
 
 	this.show = function() {
@@ -157,10 +163,10 @@ function Rocket(dna) {
 		const invHeight = map(y, 0, canvasHeight, canvasHeight, 0);
 		this.fitness = invToGoal * 6 + invHeight * 3 + fromStart * 2;
 
-		if (this.completed) {
+		if (this.completeIndex) {
 			this.fitness *= 10;
 		}
-		if (this.crashed) {
+		if (this.crashIndex) {
 			this.fitness /= 10;
 		}
 
@@ -179,23 +185,47 @@ function Population() {
 	this.incLearnGen = incLearnGen;
 	this.lifespan = lifespan;
 	this.mutationRate = mutationRate;
+	this.finished = 0;
 	for (var i = 0; i < this.popsize; i++) {
 		this.rockets[i] = new Rocket();
 	}
 
 	this.run = function() {
+		let finished = 0;
 		for (var i = 0; i < this.popsize; i++) {
-			this.rockets[i].update();
 			this.rockets[i].show();
+			if (this.rockets[i].update()) {
+				finished += 1;
+			}
+		}
+
+		dnaIndex++;
+		if (dnaIndex === this.lifespan || finished === this.popsize) {
+			generation++;
+			generationP.html('Generation: ' + generation);
+			if (generation % this.incLearnGen === 0) {
+				if (this.incLearn) {
+					this.lifespan =
+						this.lifespan < gameLifeSpan
+							? this.lifespan + this.incLearnRate
+							: gameLifeSpan;
+					lifespanP.html('Lifespan: ' + this.lifespan);
+				}
+			}
+			this.evaulate();
+			this.selection();
+			dnaIndex = 0;
 		}
 	};
 
 	this.evaulate = function() {
 		var maxFit = 0;
 		var avgFitness = 0;
+		var bestRocket;
 		for (var i = 0; i < this.popsize; i++) {
 			avgFitness += this.rockets[i].calcFitness();
 			if (this.rockets[i].fitness > maxFit) {
+				bestRocket = this.rockets[i];
 				maxFit = this.rockets[i].fitness;
 			}
 		}
@@ -305,6 +335,9 @@ function addEventListeners() {
 	});
 	document.getElementById('incLearnGen').addEventListener('change', function(e) {
 		incLearnGen = parseInt(e.target.value);
+	});
+	document.getElementById('level').addEventListener('change', function(e) {
+		level = parseInt(e.target.value);
 	});
 	document.getElementById('start').addEventListener('click', function(e) {
 		dnaIndexP.remove();
