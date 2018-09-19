@@ -279,7 +279,7 @@ function DNA(genes) {
 		var newGenes = [];
 		var mid = floor(random(this.genes.length));
 		for (var i = 0; i < this.genes.length; i++) {
-			if (i > 0) {
+			if (i > mid) {
 				newGenes[i] = this.genes[i];
 			} else {
 				newGenes[i] = partner.genes[i];
